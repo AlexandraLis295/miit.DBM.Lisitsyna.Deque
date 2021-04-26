@@ -10,11 +10,12 @@ int main()
 	object->insert_front(0);
 	object->insert_back(3);
 	object->insert_back(4);
-	cout << object->DequeToString() << endl;
+	cout << object->deque_to_string() << endl;
 	object->remove_front();
 	object->remove_back();
-	cout << object->DequeToString() << endl;
+	cout << object->deque_to_string() << endl;
 	object->insert_front(0);
-	cout << object->DequeToString() << endl;
+	//object->insert_back(5);
+	cout << object->deque_to_string() << endl;
 	delete object;
 }

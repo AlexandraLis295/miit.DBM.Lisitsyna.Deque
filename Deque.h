@@ -7,21 +7,20 @@ class Deque
 public:
 	Deque();
 	~Deque();
-	Deque<T>* insert_back(const T& value);
-	Deque<T>* insert_front(const T& value);
-	T* remove(int number, int shift);
-	void remove_front();
-	void remove_back();
-	void Overwrite_Deque(int number, int shift);
-	bool dequeIsEmpty() const;
-	bool dequeIsFull() const;
-	void Expand_Capacity();
-	string DequeToString();
+	void insert_back(const T& value);
+	void insert_front(const T& value);
+	T* remove_front();
+	T* remove_back();
+	bool deque_is_empty() const;
+	bool deque_is_full() const;
+	string deque_to_string();
 private:
 	T* deque;
 	size_t capacity = 4;
 	size_t count;
 	const int expandFactor = 2;
+	void expand_capacity();
+	void overwrite_deque(int number, int shift); //numder - то, что будем сдвигать, shift - на сколько
 };
 template <class T>
 Deque<T>::Deque()
@@ -39,47 +38,48 @@ Deque<T>::~Deque()
 	}
 }
 template<class T>
-Deque<T>* Deque<T>::insert_back(const T& value)
+void Deque<T>::insert_back(const T& value)
 {
-	if (this->dequeIsFull())
-		this->Expand_Capacity();
+	if (this->deque_is_full())
+		this->expand_capacity();
 	this->deque[this->count++] = value;
-	return this;
 }
 template<class T>
-Deque<T>* Deque<T>::insert_front(const T& value)
+void Deque<T>::insert_front(const T& value)
 {
-	if (this->dequeIsFull())
-		this->Expand_Capacity();
-	this->Overwrite_Deque(0, 1);
+	if (this->deque_is_full())
+		this->expand_capacity();
+	this->overwrite_deque(0, 1); //сдвигаем первый (нулевой) на 1 вправо 
 	this->deque[0] = value;
 	this->count++;
-	return this;
 }
+
 template<class T>
-T* Deque<T>::remove(int number, int shift)
+T* Deque<T>::remove_front()
 {
-	if (this->dequeIsEmpty()) return nullptr;
+	if (this->deque_is_empty()) return nullptr;
 	else
 	{
-		T& value = this->deque[number];
-		this->Overwrite_Deque(number, shift);
+		T& value = this->deque[0];
+		this->overwrite_deque(0, 0); //сдвигаем первый (нулевой) влево на 1
 		this->count--;
 		return &value;
 	}
 }
 template<class T>
-void Deque<T>::remove_front()
+T* Deque<T>::remove_back()
 {
-	remove(0, 0);
-}
-template<class T>
-void Deque<T>::remove_back()
-{
-	remove(count, 0);
+	if (this->deque_is_empty()) return nullptr;
+	else
+	{
+		T& value = this->deque[count];
+		this->overwrite_deque(count, 0);
+		this->count--;
+		return &value;
+	}
 }
 template <class T>
-void Deque<T>::Overwrite_Deque(int number, int shift)
+void Deque<T>::overwrite_deque(int number, int shift)
 {
 	auto buffer = new T[this->capacity];
 	copy(this->deque, this->deque + number, buffer);
@@ -89,17 +89,17 @@ void Deque<T>::Overwrite_Deque(int number, int shift)
 	this->deque = buffer;
 }
 template <class T>
-bool Deque<T>::dequeIsEmpty() const
+bool Deque<T>::deque_is_empty() const
 {
 	return (this->count == 0);
 }
 template <class T>
-bool Deque<T>::dequeIsFull() const
+bool Deque<T>::deque_is_full() const
 {
 	return (this->count == this->capacity);
 }
 template<class T>
-void Deque<T>::Expand_Capacity()
+void Deque<T>::expand_capacity()
 {
 	this->capacity *= this->expandFactor;
 	auto buffer = new T[this->capacity];
@@ -108,13 +108,13 @@ void Deque<T>::Expand_Capacity()
 	this->deque = buffer;
 }
 template<class T>
-string Deque<T>::DequeToString()
+string Deque<T>::deque_to_string()
 {
-	if (this->dequeIsEmpty())
+	if (this->deque_is_empty())
 		return "";
-	stringstream Deque_Stream;
+	stringstream deque_stream;
 	int final = this->count - 1;
 	for (int i = 0; i <= final; i++)
-		Deque_Stream << this->deque[i] << " ";
-	return Deque_Stream.str();
+		deque_stream << this->deque[i] << " ";
+	return deque_stream.str();
 }
